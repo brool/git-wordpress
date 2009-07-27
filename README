@@ -1,0 +1,59 @@
+Setting Up
+----------
+
+Assuming that your blog is set up at http://www.yourblog.com (you can create an account at wordpress.com to test this out), all you'll need to do is:
+
+    -- make a directory for the blog
+    mkdir blog
+    chdir blog
+
+    -- download everything
+    python wp.py download --user=yourname --password=yourpass --url=http://www.yourblog.com/xmlrpc.php
+    (wait a bit)
+    git init
+    git add .
+    git commit -m "first version"
+
+    -- now set up so we don't have to specify --user, --password, and --url every time (optional)
+    git wp config wp.url http://www.yourblog.com/xmlrpc.php
+    git wp config wp.user yourname
+    git wp config wp.password yourpass
+
+The files are downloaded in the appropriate YYYY/MM directories, with the draft directory being used for all of your unpublished drafts.
+
+All the drafts are stored in plain text, but you'll see some lines starting with periods -- these are various Wordpress variables that are associated with the file.  You can change them, as well;  for example, to change the title of the post, just change the line that begins with ".title". 
+
+Seeing What's Different
+-----------------------
+
+You can use the status command to see differences between the local file system and your blog.
+
+    python wp.py status
+
+Updating From The Blog
+----------------------
+
+If you've made changes through the web interface and you'd like to bring them down, you don't have to download everything again, but can instead just update.
+
+    python wp.py update
+
+Posting/Editing
+---------------
+
+If you'd like to edit a post, just edit it, and then use wp post to push it back to the blog:
+
+    python wp.py post changed-file
+
+To create a new post, just create a new file in the draft folder -- I like to specify the .title and .wp_slug parameters, as well -- and then post it.
+
+Gotchas
+-------
+
+While this program <i>requires</i> git, it doesn't automatically check anything in -- so you'll need to make sure you do git add / git commit or whatnot as necessary.
+
+There are also some gotchas due to the fact that the filename can change on you.  There are cases where the filename that will be brought down is different then the one that you send up:
+
+- You post a file without a .title or .wp_slug line</li>
+- You post a file with a different file name than the slug that is generated (i.e., "my-first-draft" when the title is actually "my final draft")</li>
+
+When you see a message of the form "changed: fn1 -> fn2", it means that a rename has occurred, and you'll need to do the git rm/git add or git mv by hand.
